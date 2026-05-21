@@ -1,7 +1,6 @@
 import { FaPhone, FaWhatsapp, FaFlag } from "react-icons/fa6";
 import api from "../api/api";
-
-const formatDate = (value) => (value ? new Date(value).toLocaleDateString() : "Not provided");
+import { formatDate } from "../utils/dateFormat";
 
 function DonorCard({ donor }) {
   const phone = donor.phone || "";
@@ -40,4 +39,3 @@ function DonorCard({ donor }) {
 }
 
 export default DonorCard;
-

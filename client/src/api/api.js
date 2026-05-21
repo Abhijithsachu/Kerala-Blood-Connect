@@ -24,6 +24,19 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 429) {
+      error.response.data = {
+        ...error.response.data,
+        message: error.response.data?.message || "Too many requests. Please wait a moment and try again."
+      };
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const saveSession = ({ token, user, donor }) => {
   localStorage.setItem(storageKeys.token, token);
   localStorage.setItem(storageKeys.user, JSON.stringify(user));

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
+import { validateBloodBank } from "../utils/validation";
 
 const tabs = ["Dashboard", "Donors", "Blood Requests", "Users", "Blood Banks", "Contact Messages", "Reports", "Settings"];
 
@@ -8,6 +9,7 @@ function AdminDashboard() {
   const [stats, setStats] = useState({});
   const [data, setData] = useState({ users: [], donors: [], requests: [], bloodBanks: [], contacts: [], reports: [] });
   const [bankForm, setBankForm] = useState({ name: "", address: "", city: "", phone: "", openingHours: "", latitude: "", longitude: "" });
+  const [bankError, setBankError] = useState("");
 
   const load = async () => {
     const [statsRes, collectionsRes] = await Promise.all([api.get("/admin/stats"), api.get("/admin/collections")]);
@@ -55,6 +57,12 @@ function AdminDashboard() {
 
   const saveBank = async (event) => {
     event.preventDefault();
+    setBankError("");
+    const validationError = validateBloodBank(bankForm);
+    if (validationError) {
+      setBankError(validationError);
+      return;
+    }
     const payload = { ...bankForm, latitude: Number(bankForm.latitude) || undefined, longitude: Number(bankForm.longitude) || undefined };
     if (bankForm._id) {
       await api.put(`/blood-banks/${bankForm._id}`, payload);
@@ -139,6 +147,7 @@ function AdminDashboard() {
           <>
             <h1>Blood Bank Management</h1>
             <form className="form card admin-form" onSubmit={saveBank}>
+              {bankError && <p className="alert admin-form-message">{bankError}</p>}
               <input placeholder="Name" value={bankForm.name} onChange={(e) => setBankForm({ ...bankForm, name: e.target.value })} required />
               <input placeholder="Address" value={bankForm.address} onChange={(e) => setBankForm({ ...bankForm, address: e.target.value })} required />
               <input placeholder="City" value={bankForm.city} onChange={(e) => setBankForm({ ...bankForm, city: e.target.value })} required />

@@ -2,19 +2,32 @@ import { useState } from "react";
 import { FaPhoneVolume } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import api from "../api/api";
+import { validateContact } from "../utils/validation";
 
 function Contact() {
   const { t } = useTranslation();
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
 
   const update = (event) => setForm({ ...form, [event.target.name]: event.target.value });
 
   const submit = async (event) => {
     event.preventDefault();
-    await api.post("/contact", form);
-    setStatus(t("messageSent"));
-    setForm({ name: "", email: "", phone: "", message: "" });
+    setError("");
+    setStatus("");
+    const validationError = validateContact(form);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    try {
+      await api.post("/contact", form);
+      setStatus(t("messageSent"));
+      setForm({ name: "", email: "", phone: "", message: "" });
+    } catch (err) {
+      setError(err.response?.data?.message || "Could not send message.");
+    }
   };
 
   return (
@@ -22,6 +35,7 @@ function Contact() {
       <div>
         <h1>{t("contactTitle")}</h1>
         <form className="form card" onSubmit={submit}>
+          {error && <p className="alert">{error}</p>}
           {status && <p className="success">{status}</p>}
           <input name="name" placeholder={t("name")} value={form.name} onChange={update} required />
           <input name="email" type="email" placeholder={t("email")} value={form.email} onChange={update} required />

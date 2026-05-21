@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../api/api";
+import { validateBloodRequest } from "../utils/validation";
 
 const initialForm = {
   patientName: "",
@@ -15,6 +16,7 @@ const initialForm = {
 function RequestBlood() {
   const [form, setForm] = useState(initialForm);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const update = (event) => {
     const { name, value, type, checked } = event.target;
@@ -23,15 +25,27 @@ function RequestBlood() {
 
   const submit = async (event) => {
     event.preventDefault();
-    await api.post("/requests", form);
-    setMessage("Blood request submitted successfully.");
-    setForm(initialForm);
+    setError("");
+    setMessage("");
+    const validationError = validateBloodRequest(form);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    try {
+      await api.post("/requests", form);
+      setMessage("Blood request submitted successfully.");
+      setForm(initialForm);
+    } catch (err) {
+      setError(err.response?.data?.message || "Could not submit blood request.");
+    }
   };
 
   return (
     <section className="page section narrow">
       <h1>Request Blood</h1>
       <form className="form card" onSubmit={submit}>
+        {error && <p className="alert">{error}</p>}
         {message && <p className="success">{message}</p>}
         <input name="patientName" placeholder="Patient name" value={form.patientName} onChange={update} required />
         <select name="bloodGroupNeeded" value={form.bloodGroupNeeded} onChange={update} required>
@@ -53,4 +67,3 @@ function RequestBlood() {
 }
 
 export default RequestBlood;
-

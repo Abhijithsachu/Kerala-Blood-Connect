@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaCalendarCheck, FaDroplet, FaEye, FaEyeSlash, FaLocationDot, FaUserPlus } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import api, { saveSession } from "../api/api";
+import { validateDonorRegistration } from "../utils/validation";
 
 const initialForm = {
   name: "",
@@ -35,6 +36,11 @@ function DonorRegister() {
   const submit = async (event) => {
     event.preventDefault();
     setError("");
+    const validationError = validateDonorRegistration(form, neverDonated);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     try {
       const { data } = await api.post("/auth/register", {
         ...form,

@@ -1,4 +1,5 @@
 import { FaPhone } from "react-icons/fa6";
+import { formatDateTime } from "../utils/dateFormat";
 
 function RequestCard({ request }) {
   const emergency = request.urgencyLevel === "Emergency";
@@ -14,7 +15,7 @@ function RequestCard({ request }) {
       </div>
       <p>{request.unitsRequired} unit(s) needed for {request.patientName}</p>
       <p><strong>Urgency:</strong> {request.urgencyLevel}</p>
-      <p><strong>Posted:</strong> {new Date(request.createdAt).toLocaleString()}</p>
+      <p><strong>Posted:</strong> {formatDateTime(request.createdAt)}</p>
       <a className="btn danger small" href={`tel:${request.contactNumber}`}>
         <FaPhone /> Contact
       </a>
@@ -23,4 +24,3 @@ function RequestCard({ request }) {
 }
 
 export default RequestCard;
-

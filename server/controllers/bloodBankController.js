@@ -1,7 +1,11 @@
 const BloodBank = require("../models/BloodBank");
+const { validateBloodBankInput } = require("../utils/validation");
 
 const createBloodBank = async (req, res) => {
   try {
+    const validation = validateBloodBankInput(req.body);
+    if (!validation.valid) return res.status(400).json({ message: validation.message });
+
     const bank = await BloodBank.create(req.body);
     res.status(201).json(bank);
   } catch (error) {
@@ -27,6 +31,9 @@ const getBloodBanks = async (req, res) => {
 };
 
 const updateBloodBank = async (req, res) => {
+  const validation = validateBloodBankInput(req.body);
+  if (!validation.valid) return res.status(400).json({ message: validation.message });
+
   const bank = await BloodBank.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
   if (!bank) return res.status(404).json({ message: "Blood bank not found" });
   res.json(bank);

@@ -7,7 +7,7 @@ import { getUser, logout } from "../api/api";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const user = getUser();
 
@@ -27,7 +27,7 @@ function Navbar() {
   ];
 
   return (
-    <header className="navbar">
+    <header className={i18n.language === "ml" ? "navbar malayalam-nav" : "navbar"}>
       <Link className="brand" to="/">
         <img src="/kerala-blood-connect-logo.png" alt="Kerala Blood Connect logo" />
         <span>Kerala Blood Connect</span>

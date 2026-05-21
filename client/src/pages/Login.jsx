@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaHeartPulse, FaShieldHeart, FaUserDoctor } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import api, { saveSession } from "../api/api";
+import { validateLogin } from "../utils/validation";
 
 function Login() {
   const { t } = useTranslation();
@@ -13,6 +14,11 @@ function Login() {
 
   const login = async (credentials = form) => {
     setError("");
+    const validationError = validateLogin(credentials);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     try {
       const { data } = await api.post("/auth/login", credentials);
       saveSession(data);

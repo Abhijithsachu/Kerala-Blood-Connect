@@ -1,4 +1,5 @@
 const Donor = require("../models/Donor");
+const { getDonationEligibility } = require("../utils/donationEligibility");
 
 const buildDonorQuery = (query) => {
   const filter = { isBlocked: false };
@@ -57,7 +58,15 @@ const updateAvailability = async (req, res) => {
     return res.status(403).json({ message: "Not allowed to update availability" });
   }
 
-  donor.availabilityStatus = Boolean(req.body.availabilityStatus);
+  const wantsAvailable = Boolean(req.body.availabilityStatus);
+  const eligibility = getDonationEligibility(donor.lastDonationDate);
+  if (wantsAvailable && eligibility.isCoolingDown) {
+    return res.status(400).json({
+      message: `You can change availability after ${eligibility.eligibleFrom.toLocaleDateString()}. ${eligibility.daysRemaining} day(s) remaining.`
+    });
+  }
+
+  donor.availabilityStatus = wantsAvailable;
   await donor.save();
   res.json(donor);
 };
@@ -69,4 +78,3 @@ const deleteDonor = async (req, res) => {
 };
 
 module.exports = { createDonor, getDonors, getDonorById, updateDonor, updateAvailability, deleteDonor };
-

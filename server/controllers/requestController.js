@@ -1,4 +1,5 @@
 const BloodRequest = require("../models/BloodRequest");
+const { validateBloodRequestInput } = require("../utils/validation");
 
 const buildRequestQuery = (query, publicOnly = false) => {
   const filter = { isBlocked: false };
@@ -12,6 +13,9 @@ const buildRequestQuery = (query, publicOnly = false) => {
 
 const createRequest = async (req, res) => {
   try {
+    const validation = validateBloodRequestInput(req.body);
+    if (!validation.valid) return res.status(400).json({ message: validation.message });
+
     const request = await BloodRequest.create(req.body);
     res.status(201).json(request);
   } catch (error) {
@@ -56,4 +60,3 @@ const deleteRequest = async (req, res) => {
 };
 
 module.exports = { createRequest, getRequests, getPublicRequests, getRequestById, updateRequestStatus, deleteRequest };
-

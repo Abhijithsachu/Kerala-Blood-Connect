@@ -46,11 +46,15 @@ The frontend uses `VITE_API_URL` if present, otherwise it connects to `http://lo
 Backend `.env`:
 
 ```txt
+NODE_ENV=development
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=replace_with_a_long_secret
 JWT_EXPIRES_IN=7d
-CLIENT_URL=http://localhost:5173
+CLIENT_URLS=http://localhost:5173,http://127.0.0.1:5173,https://your-frontend.vercel.app
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX=100
+AUTH_RATE_LIMIT_MAX=5
 BLOOD_BANK_MAX_LIMIT=50
 ```
 

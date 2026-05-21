@@ -1,7 +1,11 @@
 const Contact = require("../models/Contact");
+const { validateContactInput } = require("../utils/validation");
 
 const createContact = async (req, res) => {
   try {
+    const validation = validateContactInput(req.body);
+    if (!validation.valid) return res.status(400).json({ message: validation.message });
+
     const contact = await Contact.create(req.body);
     res.status(201).json(contact);
   } catch (error) {
@@ -15,4 +19,3 @@ const getContacts = async (req, res) => {
 };
 
 module.exports = { createContact, getContacts };
-

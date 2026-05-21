@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaPhone } from "react-icons/fa6";
+import { FaLinkedin, FaPhone } from "react-icons/fa6";
 
 function Footer() {
   return (
@@ -10,6 +10,12 @@ function Footer() {
           Kerala Blood Connect
         </h3>
         <p>Connecting donors, patients, hospitals, and blood banks during the moments that matter.</p>
+        <p className="footer-credit">
+          Developed by <strong>ABHIJITH</strong>
+          <a href="https://www.linkedin.com/in/abhijith-tp-" target="_blank" rel="noreferrer" aria-label="Abhijith LinkedIn profile">
+            <FaLinkedin /> LinkedIn
+          </a>
+        </p>
       </div>
       <div className="footer-links">
         <Link to="/find-donors">Find Donors</Link>
@@ -18,8 +24,10 @@ function Footer() {
         <Link to="/education">Education</Link>
       </div>
       <div className="emergency-card">
-        <FaPhone />
+       
         <strong>Emergency Help</strong>
+         <FaPhone/>
+        <a href="tel:+910000000000">+91 00000 00000</a>
         <span>Call 108 or your nearest hospital immediately.</span>
       </div>
     </footer>
