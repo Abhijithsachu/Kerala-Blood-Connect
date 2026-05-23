@@ -1,6 +1,17 @@
 const BloodRequest = require("../models/BloodRequest");
 const { validateBloodRequestInput } = require("../utils/validation");
 
+const buildBloodRequestPayload = (body) => ({
+  patientName: String(body.patientName || "").trim(),
+  bloodGroupNeeded: body.bloodGroupNeeded,
+  unitsRequired: Number(body.unitsRequired),
+  hospitalName: String(body.hospitalName || "").trim(),
+  location: String(body.location || "").trim(),
+  contactNumber: String(body.contactNumber || "").trim(),
+  urgencyLevel: body.urgencyLevel || "Medium",
+  isPublic: Boolean(body.isPublic)
+});
+
 const buildRequestQuery = (query, publicOnly = false) => {
   const filter = { isBlocked: false };
   if (publicOnly) filter.isPublic = true;
@@ -13,11 +24,12 @@ const buildRequestQuery = (query, publicOnly = false) => {
 
 const createRequest = async (req, res) => {
   try {
-    const validation = validateBloodRequestInput(req.body);
+    const payload = buildBloodRequestPayload(req.body);
+    const validation = validateBloodRequestInput(payload);
     if (!validation.valid) return res.status(400).json({ message: validation.message });
 
-    const request = await BloodRequest.create(req.body);
-    res.status(201).json(request);
+    const request = await BloodRequest.create(payload);
+    res.status(201).json({ message: "Blood request saved", request });
   } catch (error) {
     res.status(500).json({ message: "Could not create blood request", error: error.message });
   }

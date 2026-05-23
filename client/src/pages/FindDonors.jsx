@@ -42,7 +42,7 @@ function FindDonors() {
         <label className="check"><input type="checkbox" checked={filters.availableOnly} onChange={(e) => setFilters({ ...filters, availableOnly: e.target.checked })} /> Available only</label>
         <button className="btn primary" type="submit">Search</button>
       </form>
-      <div className="grid three">
+      <div className="grid three donor-grid">
         {donors.length ? donors.map((donor) => <DonorCard key={donor._id} donor={donor} />) : <p>No donors found.</p>}
       </div>
     </section>
@@ -50,4 +50,3 @@ function FindDonors() {
 }
 
 export default FindDonors;
-

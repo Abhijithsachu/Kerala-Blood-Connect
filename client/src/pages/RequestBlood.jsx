@@ -33,8 +33,16 @@ function RequestBlood() {
       return;
     }
     try {
-      await api.post("/requests", form);
-      setMessage("Blood request submitted successfully.");
+      const payload = {
+        ...form,
+        patientName: form.patientName.trim(),
+        hospitalName: form.hospitalName.trim(),
+        location: form.location.trim(),
+        contactNumber: form.contactNumber.trim(),
+        unitsRequired: Number(form.unitsRequired)
+      };
+      await api.post("/requests", payload);
+      setMessage("Blood request saved successfully.");
       setForm(initialForm);
     } catch (err) {
       setError(err.response?.data?.message || "Could not submit blood request.");

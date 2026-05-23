@@ -4,7 +4,7 @@ function BloodBankCard({ bank }) {
   const mapQuery = encodeURIComponent(`${bank.name} ${bank.address} ${bank.city}`);
 
   return (
-    <article className="card">
+    <article className="card bank-card">
       <h3>{bank.name}</h3>
       <p>{bank.address}</p>
       <p><strong>City:</strong> {bank.city}</p>
@@ -22,4 +22,3 @@ function BloodBankCard({ bank }) {
 }
 
 export default BloodBankCard;
-

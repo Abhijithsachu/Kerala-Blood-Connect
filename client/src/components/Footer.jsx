@@ -24,9 +24,10 @@ function Footer() {
         <Link to="/education">Education</Link>
       </div>
       <div className="emergency-card">
-       
-        <strong>Emergency Help</strong>
-         <FaPhone/>
+        <div className="emergency-title">
+          <FaPhone />
+          <strong>Emergency Help</strong>
+        </div>
         <a href="tel:+910000000000">+91 00000 00000</a>
         <span>Call 108 or your nearest hospital immediately.</span>
       </div>
