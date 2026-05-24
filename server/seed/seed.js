@@ -484,7 +484,11 @@ const seed = async () => {
   process.exit(0);
 };
 
-seed().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+if (require.main === module) {
+  seed().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}
+
+module.exports = { buildOfficialBloodBanks };
