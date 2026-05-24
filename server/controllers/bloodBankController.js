@@ -1,4 +1,5 @@
 const BloodBank = require("../models/BloodBank");
+const { getMergedBloodBanks } = require("../utils/bloodBankCatalog");
 const { validateBloodBankInput } = require("../utils/validation");
 
 const createBloodBank = async (req, res) => {
@@ -14,19 +15,9 @@ const createBloodBank = async (req, res) => {
 };
 
 const getBloodBanks = async (req, res) => {
-  const filter = {};
-  if (req.query.city) filter.city = { $regex: req.query.city, $options: "i" };
-  if (req.query.location) {
-    filter.$or = [
-      { city: { $regex: req.query.location, $options: "i" } },
-      { address: { $regex: req.query.location, $options: "i" } }
-    ];
-  }
   const maxLimit = Number(process.env.BLOOD_BANK_MAX_LIMIT) || 50;
   const limit = Math.min(Number(req.query.limit) || 0, maxLimit);
-  const query = BloodBank.find(filter).sort({ city: 1, name: 1 });
-  if (limit) query.limit(limit);
-  const banks = await query;
+  const banks = await getMergedBloodBanks({ query: req.query, limit });
   res.json(banks);
 };
 

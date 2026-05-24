@@ -256,6 +256,16 @@ const seed = async () => {
     isVerified: true
   });
 
+  const hospitalPassword = await bcrypt.hash("hospital123", 10);
+  await User.create({
+    name: "Metro Medical Centre",
+    email: "hospital@lifedrop.com",
+    password: hospitalPassword,
+    phone: "9898989898",
+    role: "hospital",
+    isVerified: true
+  });
+
   const donorPassword = await bcrypt.hash("donor123", 10);
   const donorUsers = [
     ["Anu Thomas", "anu@example.com", "9876543210"],
@@ -480,6 +490,7 @@ const seed = async () => {
   console.log(`Seeded Kerala Blood Connect data. Admin id: ${admin._id}`);
   console.log(`Seeded ${bloodBanks.length} official Kerala blood centers from the KSACS/KSBTC list.`);
   console.log("Admin login: admin@lifedrop.com / admin123");
+  console.log("Hospital login: hospital@lifedrop.com / hospital123");
   console.log("Donor login: anu@example.com / donor123");
   process.exit(0);
 };

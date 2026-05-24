@@ -157,11 +157,20 @@ function AdminDashboard() {
               <input placeholder="Longitude" value={bankForm.longitude} onChange={(e) => setBankForm({ ...bankForm, longitude: e.target.value })} />
               <button className="btn primary" type="submit">{bankForm._id ? "Update Bank" : "Add Bank"}</button>
             </form>
-            <Table title="Blood Banks" headers={["Name", "City", "Phone", "Actions"]}>
+            <Table title="Blood Banks" headers={["Name", "City", "Phone", "Source", "Actions"]}>
               {data.bloodBanks.map((bank) => (
                 <tr key={bank._id}>
-                  <td>{bank.name}</td><td>{bank.city}</td><td>{bank.phone}</td>
-                  <td><button onClick={() => setBankForm(bank)}>Edit</button><button onClick={() => deleteBank(bank._id)}>Delete</button></td>
+                  <td>{bank.name}</td><td>{bank.city}</td><td>{bank.phone}</td><td>{bank.isStatic ? "Static" : "Admin"}</td>
+                  <td>
+                    {bank.isStatic ? (
+                      <span>Static</span>
+                    ) : (
+                      <>
+                        <button onClick={() => setBankForm(bank)}>Edit</button>
+                        <button onClick={() => deleteBank(bank._id)}>Delete</button>
+                      </>
+                    )}
+                  </td>
                 </tr>
               ))}
             </Table>

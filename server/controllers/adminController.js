@@ -1,9 +1,9 @@
 const User = require("../models/User");
 const Donor = require("../models/Donor");
 const BloodRequest = require("../models/BloodRequest");
-const BloodBank = require("../models/BloodBank");
 const Contact = require("../models/Contact");
 const Report = require("../models/Report");
+const { getMergedBloodBanks } = require("../utils/bloodBankCatalog");
 
 const getStats = async (req, res) => {
   const [totalDonors, availableDonors, totalBloodRequests, emergencyRequests, blockedUsers, reports] =
@@ -54,7 +54,7 @@ const adminCollections = async (req, res) => {
     User.find().select("-password").sort({ createdAt: -1 }),
     Donor.find().sort({ createdAt: -1 }),
     BloodRequest.find().sort({ createdAt: -1 }),
-    BloodBank.find().sort({ createdAt: -1 }),
+    getMergedBloodBanks(),
     Contact.find().sort({ createdAt: -1 }),
     Report.find().sort({ createdAt: -1 })
   ]);
@@ -62,4 +62,3 @@ const adminCollections = async (req, res) => {
 };
 
 module.exports = { getStats, toggleUserBlock, toggleDonorBlock, toggleRequestBlock, listUsers, adminCollections };
-

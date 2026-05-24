@@ -5,6 +5,12 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { getUser, logout } from "../api/api";
 
+const dashboardPath = (role) => {
+  if (role === "admin") return "/admin";
+  if (role === "hospital") return "/hospital";
+  return "/dashboard";
+};
+
 function Navbar() {
   const [open, setOpen] = useState(false);
   const { t, i18n } = useTranslation();
@@ -47,7 +53,7 @@ function Navbar() {
         </Link>
         {user ? (
           <>
-            <Link className="btn outline small" to={user.role === "admin" ? "/admin" : "/dashboard"} onClick={() => setOpen(false)}>
+            <Link className="btn outline small" to={dashboardPath(user.role)} onClick={() => setOpen(false)}>
               Dashboard
             </Link>
             <button className="icon-btn" onClick={handleLogout} aria-label="Logout">

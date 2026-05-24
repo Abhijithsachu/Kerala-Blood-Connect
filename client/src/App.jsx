@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
+import HospitalProtectedRoute from "./components/HospitalProtectedRoute";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import DonorRegister from "./pages/DonorRegister";
@@ -13,6 +14,7 @@ import PublicRequests from "./pages/PublicRequests";
 import BloodBanks from "./pages/BloodBanks";
 import DonorDashboard from "./pages/DonorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import HospitalDashboard from "./pages/HospitalDashboard";
 import Contact from "./pages/Contact";
 import Education from "./pages/Education";
 
@@ -48,6 +50,14 @@ function App() {
               </AdminProtectedRoute>
             }
           />
+          <Route
+            path="/hospital"
+            element={
+              <HospitalProtectedRoute>
+                <HospitalDashboard />
+              </HospitalProtectedRoute>
+            }
+          />
         </Routes>
       </main>
       <Footer />
@@ -56,4 +66,3 @@ function App() {
 }
 
 export default App;
-

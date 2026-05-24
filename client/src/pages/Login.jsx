@@ -5,6 +5,12 @@ import { useTranslation } from "react-i18next";
 import api, { saveSession } from "../api/api";
 import { validateLogin } from "../utils/validation";
 
+const dashboardPath = (role) => {
+  if (role === "admin") return "/admin";
+  if (role === "hospital") return "/hospital";
+  return "/dashboard";
+};
+
 function Login() {
   const { t } = useTranslation();
   const [form, setForm] = useState({ email: "", password: "" });
@@ -22,7 +28,7 @@ function Login() {
     try {
       const { data } = await api.post("/auth/login", credentials);
       saveSession(data);
-      navigate(data.user.role === "admin" ? "/admin" : "/dashboard");
+      navigate(dashboardPath(data.user.role));
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     }
