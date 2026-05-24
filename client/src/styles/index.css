@@ -297,7 +297,7 @@ textarea {
 .hero {
   position: relative;
   overflow: hidden;
-  min-height: 100vh;
+  min-height: 620px;
   display: grid;
   align-items: center;
   padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 5vw, 4rem);
