@@ -72,3 +72,12 @@ export const validateBloodBank = (form) => {
   if (form.longitude && (Number(form.longitude) < -180 || Number(form.longitude) > 180)) return "Longitude must be between -180 and 180.";
   return "";
 };
+
+export const validateSiteSettings = (form) => {
+  if (form.emergencyPhone && !phonePattern.test(form.emergencyPhone.trim())) return "Enter a valid emergency phone number.";
+  if (form.whatsappNumber && !phonePattern.test(form.whatsappNumber.trim())) return "Enter a valid WhatsApp number.";
+  if (form.email && !emailPattern.test(form.email.trim())) return "Enter a valid email address.";
+  if (form.address && form.address.trim().length < 5) return "Address must be at least 5 characters.";
+  if (form.emergencyNote && form.emergencyNote.trim().length < 5) return "Emergency note must be at least 5 characters.";
+  return "";
+};

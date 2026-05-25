@@ -84,11 +84,21 @@ const validateBloodBankInput = (body) => {
   return pass();
 };
 
+const validateSiteSettingsInput = (body) => {
+  if (body.emergencyPhone && !phonePattern.test(String(body.emergencyPhone).trim())) return fail("Enter a valid emergency phone number");
+  if (body.whatsappNumber && !phonePattern.test(String(body.whatsappNumber).trim())) return fail("Enter a valid WhatsApp number");
+  if (body.email && !emailPattern.test(String(body.email).trim())) return fail("Enter a valid email address");
+  if (body.address && String(body.address).trim().length < 5) return fail("Address must be at least 5 characters");
+  if (body.emergencyNote && String(body.emergencyNote).trim().length < 5) return fail("Emergency note must be at least 5 characters");
+  return pass();
+};
+
 module.exports = {
   validateLoginInput,
   validateRegisterInput,
   validateProfileInput,
   validateBloodRequestInput,
   validateContactInput,
-  validateBloodBankInput
+  validateBloodBankInput,
+  validateSiteSettingsInput
 };

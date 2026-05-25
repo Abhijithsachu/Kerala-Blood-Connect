@@ -1126,6 +1126,15 @@ td button:hover {
   margin-bottom: 1rem;
 }
 
+.admin-settings-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 920px;
+}
+
+.admin-settings-wide {
+  grid-column: 1 / -1;
+}
+
 .admin-form-message {
   grid-column: 1 / -1;
   margin: 0;
@@ -1286,6 +1295,7 @@ td button:hover {
   .search-panel,
   .filters,
   .admin-form,
+  .admin-settings-form,
   .form-grid.two-col,
   .donation-date-row {
     grid-template-columns: 1fr;

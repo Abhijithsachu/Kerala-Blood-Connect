@@ -1,14 +1,28 @@
-import { useState } from "react";
-import { FaPhoneVolume } from "react-icons/fa6";
+import { useEffect, useState } from "react";
+import { FaEnvelope, FaLocationDot, FaPhoneVolume } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import api from "../api/api";
 import { validateContact } from "../utils/validation";
+
+const defaultSettings = {
+  emergencyPhone: "108",
+  email: "",
+  address: "",
+  emergencyNote: ""
+};
 
 function Contact() {
   const { t } = useTranslation();
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
+  const [settings, setSettings] = useState(defaultSettings);
+
+  useEffect(() => {
+    api.get("/settings")
+      .then(({ data }) => setSettings({ ...defaultSettings, ...data }))
+      .catch(() => setSettings(defaultSettings));
+  }, []);
 
   const update = (event) => setForm({ ...form, [event.target.name]: event.target.value });
 
@@ -30,6 +44,9 @@ function Contact() {
     }
   };
 
+  const emergencyPhone = settings.emergencyPhone || defaultSettings.emergencyPhone;
+  const emergencyNote = settings.emergencyNote || t("emergencyContactDesc");
+
   return (
     <section className="page section split">
       <div>
@@ -47,8 +64,10 @@ function Contact() {
       <aside className="card emergency-contact">
         <FaPhoneVolume />
         <h2>{t("emergencyContact")}</h2>
-        <p>{t("emergencyContactDesc")}</p>
-        <a className="btn danger" href="tel:108">{t("call108")}</a>
+        <p>{emergencyNote}</p>
+        {settings.email && <p><FaEnvelope /> {settings.email}</p>}
+        {settings.address && <p><FaLocationDot /> {settings.address}</p>}
+        <a className="btn danger" href={`tel:${emergencyPhone}`}>{emergencyPhone === "108" ? t("call108") : `Call ${emergencyPhone}`}</a>
       </aside>
     </section>
   );

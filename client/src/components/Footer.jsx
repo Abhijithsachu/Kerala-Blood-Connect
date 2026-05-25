@@ -1,7 +1,25 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaLinkedin, FaPhone } from "react-icons/fa6";
+import api from "../api/api";
+
+const defaultSettings = {
+  emergencyPhone: "108",
+  emergencyNote: "Call 108 or your nearest hospital immediately."
+};
 
 function Footer() {
+  const [settings, setSettings] = useState(defaultSettings);
+
+  useEffect(() => {
+    api.get("/settings")
+      .then(({ data }) => setSettings({ ...defaultSettings, ...data }))
+      .catch(() => setSettings(defaultSettings));
+  }, []);
+
+  const emergencyPhone = settings.emergencyPhone || defaultSettings.emergencyPhone;
+  const emergencyNote = settings.emergencyNote || defaultSettings.emergencyNote;
+
   return (
     <footer className="footer">
       <div>
@@ -28,8 +46,8 @@ function Footer() {
           <FaPhone />
           <strong>Emergency Help</strong>
         </div>
-        <a href="tel:+910000000000">+91 00000 00000</a>
-        <span>Call 108 or your nearest hospital immediately.</span>
+        <a href={`tel:${emergencyPhone}`}>{emergencyPhone}</a>
+        <span>{emergencyNote}</span>
       </div>
     </footer>
   );

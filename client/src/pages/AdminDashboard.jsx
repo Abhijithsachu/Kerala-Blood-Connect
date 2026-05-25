@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
-import { validateBloodBank } from "../utils/validation";
+import { validateBloodBank, validateSiteSettings } from "../utils/validation";
 
 const tabs = ["Dashboard", "Donors", "Blood Requests", "Users", "Blood Banks", "Contact Messages", "Reports", "Settings"];
+const initialSettings = { emergencyPhone: "", whatsappNumber: "", email: "", address: "", emergencyNote: "" };
 
 function AdminDashboard() {
   const [active, setActive] = useState("Dashboard");
@@ -10,6 +11,9 @@ function AdminDashboard() {
   const [data, setData] = useState({ users: [], donors: [], requests: [], bloodBanks: [], contacts: [], reports: [] });
   const [bankForm, setBankForm] = useState({ name: "", address: "", city: "", phone: "", openingHours: "", latitude: "", longitude: "" });
   const [bankError, setBankError] = useState("");
+  const [settingsForm, setSettingsForm] = useState(initialSettings);
+  const [settingsMessage, setSettingsMessage] = useState("");
+  const [settingsError, setSettingsError] = useState("");
 
   const load = async () => {
     const [statsRes, collectionsRes] = await Promise.all([api.get("/admin/stats"), api.get("/admin/collections")]);
@@ -17,8 +21,14 @@ function AdminDashboard() {
     setData(collectionsRes.data);
   };
 
+  const loadSettings = async () => {
+    const { data: settings } = await api.get("/admin/settings");
+    setSettingsForm({ ...initialSettings, ...settings });
+  };
+
   useEffect(() => {
     load().catch(() => {});
+    loadSettings().catch(() => {});
   }, []);
 
   const blockUser = async (id, isBlocked) => {
@@ -83,6 +93,29 @@ function AdminDashboard() {
   const updateReport = async (id, status) => {
     await api.patch(`/reports/${id}/status`, { status });
     load();
+  };
+
+  const updateSettings = (event) => {
+    setSettingsForm({ ...settingsForm, [event.target.name]: event.target.value });
+  };
+
+  const saveSettings = async (event) => {
+    event.preventDefault();
+    setSettingsError("");
+    setSettingsMessage("");
+    const validationError = validateSiteSettings(settingsForm);
+    if (validationError) {
+      setSettingsError(validationError);
+      return;
+    }
+    try {
+      const payload = Object.fromEntries(Object.entries(settingsForm).map(([key, value]) => [key, value.trim()]));
+      const { data: savedSettings } = await api.patch("/admin/settings", payload);
+      setSettingsForm({ ...initialSettings, ...savedSettings });
+      setSettingsMessage("Settings saved successfully.");
+    } catch (err) {
+      setSettingsError(err.response?.data?.message || "Could not save settings.");
+    }
   };
 
   return (
@@ -199,9 +232,33 @@ function AdminDashboard() {
         )}
 
         {active === "Settings" && (
-          <div className="card">
+          <div>
             <h1>Settings</h1>
-            <p>Admin settings can be extended here for site contact numbers, request visibility, and moderation rules.</p>
+            <form className="form card admin-settings-form" onSubmit={saveSettings}>
+              {settingsError && <p className="alert admin-form-message">{settingsError}</p>}
+              {settingsMessage && <p className="success admin-form-message">{settingsMessage}</p>}
+              <label>
+                Emergency phone
+                <input name="emergencyPhone" placeholder="9876543210" value={settingsForm.emergencyPhone} onChange={updateSettings} />
+              </label>
+              <label>
+                WhatsApp number
+                <input name="whatsappNumber" placeholder="9876543210" value={settingsForm.whatsappNumber} onChange={updateSettings} />
+              </label>
+              <label>
+                Email
+                <input name="email" type="email" placeholder="help@example.com" value={settingsForm.email} onChange={updateSettings} />
+              </label>
+              <label>
+                Address
+                <input name="address" placeholder="Kerala Blood Connect office address" value={settingsForm.address} onChange={updateSettings} />
+              </label>
+              <label className="admin-settings-wide">
+                Emergency note
+                <textarea name="emergencyNote" placeholder="Call 108 or your nearest hospital immediately." value={settingsForm.emergencyNote} onChange={updateSettings} />
+              </label>
+              <button className="btn primary admin-settings-wide" type="submit">Save Settings</button>
+            </form>
           </div>
         )}
       </div>

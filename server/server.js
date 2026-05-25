@@ -84,6 +84,7 @@ app.use("/api/requests", require("./routes/requestRoutes"));
 app.use("/api/blood-banks", require("./routes/bloodBankRoutes"));
 app.use("/api/contact", require("./routes/contactRoutes"));
 app.use("/api/reports", require("./routes/reportRoutes"));
+app.use("/api/settings", require("./routes/settingsRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 
 app.use((req, res) => {
